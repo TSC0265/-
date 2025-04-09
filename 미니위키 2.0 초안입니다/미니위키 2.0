@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>미니위키</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      max-width: 768px;
+      margin: auto;
+    }
+    .search {
+      margin-bottom: 1rem;
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+    .back-button {
+      color: #3b82f6;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 미니위키</h1>
+  <input type="text" id="searchInput" class="search" placeholder="문서 검색...">
+
+  <div id="docList"></div>
+  <div id="docView" class="hidden">
+    <span class="back-button" id="backButton">← 목록으로 돌아가기</span>
+    <h2 id="docTitle"></h2>
+    <p id="docContent"></p>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const documents = [
+        {
+          id: "galaxy-a15",
+          title: "Galaxy A15",
+          content: "Galaxy A15는 삼성전자에서 출시한 보급형 스마트폰이다."
+        },
+        {
+          id: "iphone-16",
+          title: "iPhone 16",
+          content: "iPhone 16은 애플의 2024년형 스마트폰으로, 성능과 카메라가 개선되었다."
+        }
+      ];
+
+      const searchInput = document.getElementById("searchInput");
+      const docList = document.getElementById("docList");
+      const docView = document.getElementById("docView");
+      const docTitle = document.getElementById("docTitle");
+      const docContent = document.getElementById("docContent");
+      const backButton = document.getElementById("backButton");
+
+      function renderList(filtered) {
+        docList.innerHTML = "";
+        filtered.forEach(doc => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.textContent = doc.title;
+          card.addEventListener("click", () => showDoc(doc));
+          docList.appendChild(card);
+        });
+      }
+
+      function showDoc(doc) {
+        docTitle.textContent = doc.title;
+        docContent.textContent = doc.content;
+        docList.classList.add("hidden");
+        docView.classList.remove("hidden");
+      }
+
+      function goBack() {
+        docView.classList.add("hidden");
+        docList.classList.remove("hidden");
+      }
+
+      function handleSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        const filtered = documents.filter(doc => doc.title.toLowerCase().includes(query));
+        if (query !== "" && filtered.length === 1) {
+          showDoc(filtered[0]);
+        } else {
+          renderList(filtered);
+          docView.classList.add("hidden");
+          docList.classList.remove("hidden");
+        }
+      }
+
+      searchInput.addEventListener("input", handleSearch);
+      backButton.addEventListener("click", goBack);
+
+      renderList(documents);
+    });
+  </script>
+</body>
+</html>
